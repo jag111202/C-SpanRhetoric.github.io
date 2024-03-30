@@ -1,14 +1,151 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exploratory Data Analysis</title>
+  <!-- Load Plotly and D3.js from CDN -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212; /* Dark background */
+      color: #FFFFFF; /* White text */
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      margin: 20px;
+      max-width: 300px; /* Limit width of text container */
+    }
+    .content {
+      padding: 20px;
+      background-color: #1f1f1f; /* Darker container background */
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    p {
+      line-height: 1.6;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #555555; /* Light border */
+      margin: 20px 0;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #CCCCCC; /* Light text */
+      margin-top: auto; /* Push footer to the bottom */
+    }
+    .plot {
+      flex: 1; /* Grow to fill remaining space */
+      margin: 20px;
+    }
+  </style>
 </head>
 <body>
-   <h1>CSpan Rhetoric</h1>
-   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolorum reprehenderit aliquid quae? Cum optio veritatis dolorum sit voluptatem minima totam dignissimos quisquam. In iusto enim modi doloremque ipsum adipisci!</p>
-   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolorum reprehenderit aliquid quae? Cum optio veritatis dolorum sit voluptatem minima totam dignissimos quisquam. In iusto enim modi doloremque ipsum adipisci!</p>
-   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolorum reprehenderit aliquid quae? Cum optio veritatis dolorum sit voluptatem minima totam dignissimos quisquam. In iusto enim modi doloremque ipsum adipisci!</p>
-   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolorum reprehenderit aliquid quae? Cum optio veritatis dolorum sit voluptatem minima totam dignissimos quisquam. In iusto enim modi doloremque ipsum adipisci!</p>
+  <div class="container">
+    <div class="content">
+      <h1>Exploratory Data Analysis</h1>
+      <p>Welcome to our data exploration page. Below is a violin plot showing the distribution of values across different analysis types.</p>
+      
+      <h2>Data Overview</h2>
+      <p>This dataset represents the results of various analyses. Each analysis type has a corresponding value.</p>
+      <p><strong>Positive:</strong> Indicates a positive outcome.</p>
+      <p><strong>Negative:</strong> Indicates a negative outcome.</p>
+      <p><strong>Neutral:</strong> Indicates a neutral outcome.</p>
+      
+      <h2>Other Graphs</h2>
+      <p>You can add other graphs and visualizations to this page below:</p>
+      <!-- Add other graphs here -->
+
+      <div class="footer">
+        <p>Created with Plotly and D3.js. &copy; 2024 Your Company Name</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plotly graph -->
+  <div class="plot" id="plot"></div>
+
+  <!-- JavaScript code for Plotly graph -->
+  <script>
+    // Load data from CSV file
+    d3.csv("melted_data.csv").then(function(data) {
+      // Create the violin plot using Plotly and D3.js
+      var layout = {
+        title: "Violin Plot",
+        xaxis: {
+          title: "Analysis Type",
+          automargin: true, // Adjust margins to fit x-axis label
+        },
+        yaxis: { title: "Value" },
+        violinmode: "group",
+        width: window.innerWidth * 0.7, // Set plot width to 70% of window
+        height: window.innerHeight * 0.8, // Set plot height to 80% of window
+        margin: { t: 100, l: 100, r: 100, b: 100 }, // Add margins for title and axis labels
+        plot_bgcolor: '#1f1f1f', // Darker plot background
+        paper_bgcolor: '#1f1f1f', // Darker paper background
+        font: {
+          color: '#FFFFFF' // White text
+        }
+      };
+
+      var config = { responsive: true };
+
+      var traces = [];
+      var variables = [...new Set(data.map(d => d.variable))];
+
+      variables.forEach(function(variable, index) {
+        var subset = data.filter(d => d.variable === variable);
+        var trace = {
+          type: "violin",
+          x: subset.map(d => d.variable),
+          y: subset.map(d => d.value),
+          legendgroup: variable,
+          scalegroup: variable,
+          name: variable,
+          side: "both",
+          line: { color: getColor(index, variables.length) }, // Different color for each violin plot
+          fillcolor: getColor(index, variables.length),
+          hoveron: "points",
+          hoverinfo: "text+y+name", // Include text in hover
+          box: { visible: true },
+          meanline: { visible: true },
+          scalemode: "count",
+          // Define hover template
+          hovertemplate: function(d) {
+            var sign = d.y < 0 ? "Negative" : (d.y === 0 ? "Neutral" : "Positive");
+            return (
+              "<b>" + d.name + "</b><br>" +
+              "Value: " + d.y + "<br>" +
+              "Sentiment: " + sign
+            );
+          }
+        };
+        traces.push(trace);
+      });
+
+      Plotly.newPlot("plot", traces, layout, config);
+    }).catch(function(error) {
+      throw error;
+    });
+
+    // Function to get different colors
+    function getColor(index, total) {
+      var colorScale = d3.scaleSequential()
+        .domain([0, total])
+        .interpolator(d3.interpolateRainbow);
+      return colorScale(index);
+    }
+  </script>
 </body>
 </html>
