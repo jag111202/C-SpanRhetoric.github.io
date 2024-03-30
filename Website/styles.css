@@ -1,0 +1,62 @@
+/* Add custom styles here */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+  }
+  
+  .buttons {
+    margin-bottom: 20px;
+  }
+  
+  .buttons .btn {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 8px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .buttons .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  #plot {
+    width: 100%;
+    height: 500px;
+    margin: 20px auto;
+  }
+  
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+  
+  /* Custom styles for the specific title */
+  #specific-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Custom styles for Avenir Light font */
+  .avenir-light {
+    font-family: 'Avenir', sans-serif;
+    font-weight: 300;
+  }
+  
